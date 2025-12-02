@@ -13,3 +13,4 @@ cmake_install.cmake
 Makefile
 filterData.js
 db.txt
+server.pid
