@@ -15,10 +15,11 @@ using namespace bsoncxx::builder::basic;
 class AdminService
 {
 private:
-    mongocxx::collection collection;
+    mongocxx::collection jobcollection;
+    mongocxx::collection applicationcollection;
 
 public:
-    AdminService(mongocxx::collection coll) : collection(coll) {}
+    AdminService(mongocxx::collection j, mongocxx::collection a) : jobcollection(j), applicationcollection(a) {}
 
     // GET /admin/jobs/pending
     std::vector<json> getPendingJobs()
@@ -26,7 +27,22 @@ public:
         std::vector<json> pending;
 
         auto filter = make_document(kvp("status", "pending"));
-        auto cursor = collection.find(filter.view());
+        auto cursor = jobcollection.find(filter.view());
+
+        for (auto &&doc : cursor)
+        {
+            pending.push_back(json::parse(bsoncxx::to_json(doc)));
+        }
+
+        return pending;
+    }
+
+    std::vector<json> getPendingApplications()
+    {
+        std::vector<json> pending;
+
+        auto filter = make_document(kvp("status", "pending"));
+        auto cursor = applicationcollection.find(filter.view());
 
         for (auto &&doc : cursor)
         {
@@ -56,7 +72,30 @@ public:
             ))
         );
 
-        auto result = collection.update_one(filter.view(), update.view());
+        auto result = jobcollection.update_one(filter.view(), update.view());
+        return result && result->modified_count() > 0;
+    }
+
+    bool approveApplication(const std::string &id)
+    {
+        bsoncxx::oid appl_oid;
+        try {
+            appl_oid = bsoncxx::oid{id};
+        } catch (...) {
+            return false;
+        }
+
+        auto filter = make_document(kvp("_id", appl_oid));
+
+        auto update = make_document(
+            kvp("$set", make_document(
+                kvp("status", "approved"),
+                kvp("updatedAt", bsoncxx::types::b_date{
+                     std::chrono::system_clock::now() })
+            ))
+        );
+
+        auto result = applicationcollection.update_one(filter.view(), update.view());
         return result && result->modified_count() > 0;
     }
 
@@ -80,7 +119,30 @@ public:
             ))
         );
 
-        auto result = collection.update_one(filter.view(), update.view());
+        auto result = jobcollection.update_one(filter.view(), update.view());
+        return result && result->modified_count() > 0;
+    }
+
+    bool rejectApplication(const std::string &id)
+    {
+        bsoncxx::oid appl_oid;
+        try {
+            appl_oid = bsoncxx::oid{id};
+        } catch (...) {
+            return false;
+        }
+
+        auto filter = make_document(kvp("_id", appl_oid));
+
+        auto update = make_document(
+            kvp("$set", make_document(
+                kvp("status", "rejected"),
+                kvp("updatedAt", bsoncxx::types::b_date{
+                     std::chrono::system_clock::now() })
+            ))
+        );
+
+        auto result = applicationcollection.update_one(filter.view(), update.view());
         return result && result->modified_count() > 0;
     }
 };

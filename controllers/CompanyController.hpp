@@ -19,6 +19,13 @@ public:
     res.status = 200;
     res.set_content(json(jobs).dump(), "application/json");
   }
+
+  void getAllCompanies(const httplib::Request &req, httplib::Response & res){
+    auto companies = service.getAllCompanies();
+    res.status = 200;
+    res.set_content(json(companies).dump(), "application/json");
+  }
+
   void getCompanyPublicProfile(const httplib::Request &req,
                                httplib::Response &res) {
     try {

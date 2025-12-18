@@ -39,11 +39,24 @@ public:
         {
             auto tmp = json::parse(bsoncxx::to_json(doc));
 
-            if (tmp.value("status", "pending") == "approved")
-                jobs.push_back(tmp);
+            // if (tmp.value("status", "pending") == "approved")
+            jobs.push_back(tmp);
         }
 
         return jobs;
+    }
+
+    std::vector<json> getAllCompanies()
+    {
+        std::vector<json> companies;
+
+        auto cursor = companycollection.find({});
+        for (auto &&doc : cursor)
+        {
+            companies.emplace_back(json::parse(bsoncxx::to_json(doc)));
+        }
+        std::cout << companies.size() << std::endl;
+        return companies;
     }
 
     json getPublicCompany(const bsoncxx::oid &companyId)

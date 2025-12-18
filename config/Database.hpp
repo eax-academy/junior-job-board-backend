@@ -3,13 +3,11 @@
 #include "../utils/Env.hpp"
 #include <mongocxx/client.hpp>
 #include <mongocxx/database.hpp>
-#include <mongocxx/instance.hpp>
 #include <mongocxx/uri.hpp>
 #include <string>
 
 class Database {
 private:
-  mongocxx::instance instance{}; // Must be instantiated once
   mongocxx::client client;
   mongocxx::database db;
 

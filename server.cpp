@@ -8,61 +8,93 @@
 #include "routes/UserRoutes.hpp"
 #include "utils/jwt.hpp"
 
-int main() {
-  // Initializing Database
-  Database database;
-  auto db = database.getDb();
+#include <mongocxx/instance.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/uri.hpp>
 
-  auto usersCollection = database.getCollection("users");
-  auto emailCollection = database.getCollection("email");
-  auto companyCollection = database.getCollection("company");
-  auto jobCollection = database.getCollection("jobs");
-  auto applicationCollection = database.getCollection("applications");
+mongocxx::instance global_mongo_instance{}; // MUST be created once globally!
 
-  httplib::Server server;
-  server.Options(".*",
-                 [&](const httplib::Request &req, httplib::Response &res) {
-                   res.set_header("Access-Control-Allow-Origin", "*");
-                   res.set_header("Access-Control-Allow-Methods",
-                                  "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-                   res.set_header("Access-Control-Allow-Headers",
-                                  "Content-Type, Authorization");
-                   res.status = 200;
-                 });
-  UserService userService(usersCollection);
-  UserController userController(userService);
+int main()
+{
+    // Initialize DB connection via Database class
+    Database database;
+    auto db = database.getDb();
 
-  UserAuthService userauthservice(usersCollection, emailCollection);
-  UserAuthController userauthcontroller(userauthservice);
+    // Optional: test list of collections
+    try
+    {
+        auto collections = db.list_collection_names();
+        std::cout << "Connected to MongoDB Atlas!" << std::endl;
 
-  CompanyAuthService companyauthservice(companyCollection, emailCollection);
-  CompanyAuthController companyauthcontroller(companyauthservice);
+        if (collections.empty())
+            std::cout << "No collections found yet (DB is empty)." << std::endl;
+        else
+        {
+            std::cout << "Collections:" << std::endl;
+            for (auto &name : collections)
+                std::cout << " - " << name << std::endl;
+        }
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "MongoDB connection test error: " << e.what() << std::endl;
+    }
 
-  AuthService authservice(companyCollection, usersCollection);
-  AuthController authcontroller(authservice);
+    // Get collections
+    auto usersCollection = database.getCollection("users");
+    auto emailCollection = database.getCollection("email");
+    auto companyCollection = database.getCollection("company");
+    auto jobCollection = database.getCollection("jobs");
+    auto applicationCollection = database.getCollection("applications");
 
-  JobService jobservice(jobCollection);
-  JobController jobcontroller(jobservice);
+    // Init Server
+    httplib::Server server;
 
-  CompanyService companyservice(companyCollection, jobCollection);
-  CompanyController companycontroller(companyservice);
-  ApplicationService applicationservice(applicationCollection);
+    server.Options(".*", [&](const httplib::Request &req, httplib::Response &res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_header("Access-Control-Allow-Methods",
+                       "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers",
+                       "Content-Type, Authorization");
+        res.status = 200;
+    });
 
-  ApplicationController applicationController(applicationservice, jobservice);
+    // Services & Controllers
+    UserService userService(usersCollection);
+    UserController userController(userService);
 
-  AdminService adminservice(jobCollection);
-  AdminController admincontroller(adminservice);
+    UserAuthService userauthservice(usersCollection, emailCollection);
+    UserAuthController userauthcontroller(userauthservice);
 
-  registerApplicationRoutes(server, applicationController);
+    CompanyAuthService companyauthservice(companyCollection, emailCollection);
+    CompanyAuthController companyauthcontroller(companyauthservice);
 
-  registerUserRoutes(server, userController);
-  registerUserAuthRoutes(server, userauthcontroller);
-  registerCompanyAuthRoutes(server, companyauthcontroller);
-  login(server, authcontroller);
-  registerJobRoutes(server, jobcontroller);
-  registerCompanyRoutes(server, companycontroller);
-  registerAdminRoutes(server, admincontroller);
+    AuthService authservice(companyCollection, usersCollection);
+    AuthController authcontroller(authservice);
 
-  std::cout << "🚀 Server running on http://0.0.0.0:8080\n";
-  server.listen("0.0.0.0", 8080);
+    JobService jobservice(jobCollection);
+    JobController jobcontroller(jobservice);
+
+    CompanyService companyservice(companyCollection, jobCollection);
+    CompanyController companycontroller(companyservice);
+
+    ApplicationService applicationservice(applicationCollection);
+    ApplicationController applicationController(applicationservice, jobservice);
+
+    AdminService adminservice(jobCollection, applicationCollection);
+    AdminController admincontroller(adminservice);
+
+    // Register routes
+    registerApplicationRoutes(server, applicationController);
+    registerUserRoutes(server, userController);
+    registerUserAuthRoutes(server, userauthcontroller);
+    registerCompanyAuthRoutes(server, companyauthcontroller);
+    login(server, authcontroller);
+    registerJobRoutes(server, jobcontroller);
+    registerCompanyRoutes(server, companycontroller);
+    registerAdminRoutes(server, admincontroller);
+
+    // Start server
+    std::cout << "🚀 Server running on http://0.0.0.0:8080\n";
+    server.listen("0.0.0.0", 8080);
 }

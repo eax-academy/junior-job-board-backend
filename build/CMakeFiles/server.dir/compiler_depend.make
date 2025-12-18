@@ -36,8 +36,8 @@ CMakeFiles/server.dir/server.cpp.o: /home/arayik/thread/c++/backend/server.cpp \
   /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/picojson/picojson.h \
   /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/jwt-cpp/base.h \
   /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/jwt-cpp/jwt.h \
-  /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/jwt-cpp/jwt.h \
   /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/picojson/picojson.h \
+  /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/jwt-cpp/jwt.h \
   /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/defaults.h \
   /home/arayik/thread/c++/backend/third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/traits.h \
   /home/arayik/thread/c++/backend/utils/jwt.hpp \

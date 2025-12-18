@@ -438,9 +438,6 @@ CMakeFiles/server.dir/server.cpp.o: \
  /usr/local/include/mongocxx/v_noabi/mongocxx/options/tls-fwd.hpp \
  /usr/local/include/mongocxx/v_noabi/mongocxx/options/client_encryption.hpp \
  /usr/local/include/mongocxx/v_noabi/mongocxx/uri.hpp \
- /usr/local/include/mongocxx/v_noabi/mongocxx/instance.hpp \
- /usr/local/include/mongocxx/v_noabi/mongocxx/instance-fwd.hpp \
- /usr/local/include/mongocxx/v_noabi/mongocxx/logger-fwd.hpp \
  /home/arayik/thread/c++/backend/models/Company.hpp \
  /home/arayik/thread/c++/backend/models/../third_party/json.hpp \
  /usr/include/c++/13/forward_list /usr/include/c++/13/bits/forward_list.h \
@@ -668,7 +665,7 @@ CMakeFiles/server.dir/server.cpp.o: \
  /home/arayik/thread/c++/backend/routes/../middleware/../utils/../third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/defaults.h \
  /home/arayik/thread/c++/backend/routes/../middleware/../utils/../third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/traits.h \
  /home/arayik/thread/c++/backend/routes/../middleware/../utils/../third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/../../../picojson/picojson.h \
- /home/arayik/thread/c++/backend/routes/../middleware/../utils/../third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/../../../jwt-cpp/jwt.h \
+ /home/arayik/thread/c++/backend/routes/../middleware/../utils/../third_party/jwt-cpp/include/jwt-cpp/traits/kazuho-picojson/../../jwt.h \
  /home/arayik/thread/c++/backend/routes/../middleware/../third_party/httplib.h \
  /home/arayik/thread/c++/backend/routes/../third_party/httplib.h \
  /home/arayik/thread/c++/backend/routes/ApplicationRoutes.hpp \
@@ -684,6 +681,9 @@ CMakeFiles/server.dir/server.cpp.o: \
  /home/arayik/thread/c++/backend/routes/../controllers/UserAuthController.hpp \
  /home/arayik/thread/c++/backend/routes/../controllers/../services/UserAuthService.hpp \
  /home/arayik/thread/c++/backend/routes/../controllers/../services/../models/User.hpp \
+ /usr/local/include/mongocxx/v_noabi/mongocxx/instance.hpp \
+ /usr/local/include/mongocxx/v_noabi/mongocxx/instance-fwd.hpp \
+ /usr/local/include/mongocxx/v_noabi/mongocxx/logger-fwd.hpp \
  /home/arayik/thread/c++/backend/routes/../controllers/../services/../utils/Password.hpp \
  /home/arayik/thread/c++/backend/routes/../controllers/CompanyAuthController.hpp \
  /home/arayik/thread/c++/backend/routes/../controllers/../services/CompanyAuthService.hpp \

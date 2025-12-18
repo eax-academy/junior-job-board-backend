@@ -45,6 +45,12 @@ void registerCompanyRoutes(httplib::Server &server, CompanyController &companyco
                    res.set_header("Access-Control-Allow-Origin", "*");
                    companycontroller.getCompanyPublicProfile(req, res);
                });
+    server.Get("/companies",
+               [&](const httplib::Request &req, httplib::Response &res)
+               {
+                   res.set_header("Access-Control-Allow-Origin", "*");
+                   companycontroller.getAllCompanies(req, res);
+               });
     server.Put(R"(/companies/([a-fA-F0-9]{24}))",
                [&](const httplib::Request &req, httplib::Response &res)
                {
@@ -67,4 +73,3 @@ void registerCompanyRoutes(httplib::Server &server, CompanyController &companyco
                    companycontroller.updateCompanyProfile(req, res, companyIdFromToken);
                });
 }
-
